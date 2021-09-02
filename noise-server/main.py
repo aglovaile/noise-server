@@ -1,11 +1,9 @@
 # FastAPI server for Noise-Server
 # By Aglovaile
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
-from starlette.responses import StreamingResponse
-from fastapi.responses import FileResponse
+from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 from io import BytesIO
 import re
 import os, random
@@ -64,16 +62,18 @@ async def getRandomImg():
 
 @app.get('/api/png/{dimensions}')
 async def getNoiseImg(dimensions:str, octaves:int=1, persistence:float=0.5, lacunarity:float=2.0, base:int=0, frequency:float=1.0):
-    return FileResponse('noise-server/static/584547.png')
-    # profiler = cProfile.Profile()
-    # profiler.enable()
+    # return FileResponse('noise-server/static/584547.png')
+    profiler = cProfile.Profile()
+    profiler.enable()
 
-    # img = makeImg(dimensions, octaves, persistence, lacunarity, base, frequency)
+    img = makeImg(dimensions, octaves, persistence, lacunarity, base, frequency)
     # imgStream = BytesIO()
     # img.write(imgStream)
+    img.save('temp.png')
 
-    # profiler.disable()
-    # stats = pstats.Stats(profiler).sort_stats('cumtime')
-    # stats.print_stats()
-    # # return img
+    profiler.disable()
+    stats = pstats.Stats(profiler).sort_stats('cumtime')
+    stats.print_stats()
+    # return img
     # return StreamingResponse(imgStream, media_type='image/png')
+    return FileResponse('./temp.png', media_type='image/png')

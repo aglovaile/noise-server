@@ -3,6 +3,7 @@ import png
 # from PIL import Image
 from random import randrange
 from noise import pnoise2, snoise2
+import cProfile, pstats
 
 # if len(sys.argv) not in (2,3) or '--help' in sys.argv or '-h' in sys.argv:
 #     print('2dtexture.py FILE [OCTAVES]')
@@ -34,6 +35,9 @@ from noise import pnoise2, snoise2
 # f.close()
 
 def makeImg(dimensions, octaves, persistence, lacunarity, base, frequency):
+    profiler = cProfile.Profile()
+    profiler.enable()
+
     xy = re.findall('\d+', dimensions)
 
     xDim = int(xy[0])
@@ -49,15 +53,22 @@ def makeImg(dimensions, octaves, persistence, lacunarity, base, frequency):
             # Pixel val is three vals 0-255
             # Convert max hex color space into num, multiply by noise val, round to nearest int
             pixelNoise = round((snoise2(x * frequency, y * frequency, octaves, persistence, base) * colorRange / 2) + ((colorRange + 1) / 2))
-            noiseHex = hex(pixelNoise).replace('0x', '').zfill(6)
-            rgbList = re.findall('..', noiseHex)
+            noiseHex = hex(pixelNoise)[2:].zfill(6)
+            # rgbList = re.findall('..', noiseHex)
+            rgbList = [noiseHex[0:2], noiseHex[2:4], noiseHex[4:]]
             # print(noiseHex, rgbList)
 
             for i in list(rgbList):
                 row.append(int(i, 16))
         pixelsList.append(row)
     # return pixelsList
-    return png.from_array(pixelsList, 'RGB')
 
+    newPng = png.from_array(pixelsList, 'RGB')
+
+    profiler.disable()
+    stats = pstats.Stats(profiler).sort_stats('cumtime')
+    stats.print_stats()
+    
+    return newPng
 if __name__ == '__main__':
     makeImg
