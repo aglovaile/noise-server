@@ -53,27 +53,30 @@ async def getNoiseJSON(dimensions:str, octaves:int=1, persistence:float=0.5, lac
 
         return JSONResponse(res)
 
-@app.get('/api/png/random')
+@app.get(
+    '/api/png/random',
+    responses= {200: {"content": {'image/png': {}}}},
+    response_class=Response
+)
 async def getRandomImg():
     randomImg = random.choice(os.listdir('./noise-server/static'))   
     imgPath = f'./noise-server/static/{randomImg}'
     return FileResponse(imgPath)
 
 
-@app.get('/api/png/{dimensions}')
+@app.get('/api/png/{dimensions}', responses={200: {'content': {'image/png': {}}}}, response_class=Response)
 async def getNoiseImg(dimensions:str, octaves:int=1, persistence:float=0.5, lacunarity:float=2.0, base:int=0, frequency:float=1.0):
-    # return FileResponse('noise-server/static/584547.png')
     profiler = cProfile.Profile()
     profiler.enable()
 
     img = makeImg(dimensions, octaves, persistence, lacunarity, base, frequency)
-    # imgStream = BytesIO()
-    # img.write(imgStream)
-    img.save('temp.png')
+    imgBytes = BytesIO()
+    
+    img.save(imgBytes, format='PNG')
+    imgBytes.seek(0)
 
     profiler.disable()
     stats = pstats.Stats(profiler).sort_stats('cumtime')
     stats.print_stats()
-    # return img
-    # return StreamingResponse(imgStream, media_type='image/png')
-    return FileResponse('./temp.png', media_type='image/png')
+
+    return Response(content=imgBytes.read(), media_type='image/png')
