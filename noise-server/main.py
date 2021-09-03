@@ -46,12 +46,12 @@ async def getNoiseJSON(dimensions:str, octaves:int=1, persistence:float=0.5, lac
             }
         profiler = cProfile.Profile()
         profiler.enable()
-        res = jsonable_encoder(makeNoise(noiseReq))
+        res = makeNoise(noiseReq)
         profiler.disable()
         stats = pstats.Stats(profiler).sort_stats('cumtime')
         stats.print_stats()
 
-        return JSONResponse(res)
+        return res
 
 @app.get(
     '/api/png/random',
@@ -65,11 +65,21 @@ async def getRandomImg():
 
 
 @app.get('/api/png/{dimensions}', responses={200: {'content': {'image/png': {}}}}, response_class=Response)
-async def getNoiseImg(dimensions:str, octaves:int=1, persistence:float=0.5, lacunarity:float=2.0, base:int=0, frequency:float=1.0):
+async def getNoiseImg(
+    dimensions:str, 
+    octaves:int=1, 
+    persistence:float=0.5, 
+    lacunarity:float=2.0, 
+    base:int=0, 
+    frequency:float=1.0,
+    maxcolor:str='ffffff',
+    mincolor:str='000000',
+    grayscale:bool=False
+    ):
     profiler = cProfile.Profile()
     profiler.enable()
 
-    img = makeImg(dimensions, octaves, persistence, lacunarity, base, frequency)
+    img = makeImg(dimensions, octaves, persistence, lacunarity, base, frequency, mincolor, maxcolor, grayscale)
     imgBytes = BytesIO()
     
     img.save(imgBytes, format='PNG')
