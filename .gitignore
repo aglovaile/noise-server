@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# misc folders
+/bin
+/lib*
+*/utils/*.png
+temp.png

@@ -20,23 +20,26 @@ Returned noise values will be floats between -1 and 1.
     `GET`
 
 * **URL Params:**
-    #### Optional
-    * `octaves=[int]`
-    * `lacunarity=[float]`
-    * `persistence=[float]`
-    * `base=[int]`
+    * Optional
+        * `octaves=[int]`
+        * `lacunarity=[float]`
+        * `persistence=[float]`
+        * `base=[int]`
     
 * **Data Params**
-    #### None
+    * None
 
 * **Success Response**
     * Code: 200
     * Content-Type: application/json
-    * Content: ```{
-        dimensions: [Array of dimensions[int]],
-        octaves: [int],
-        persistence: [float],
-        lacunarity: [float],
-        base: [int],
-        data: [Array of Perlin noise]
-    }```
+    * Content: 
+    ``` json
+    {
+        "dimensions": [ dimension1=[int], ... ],
+        "octaves": int,
+        "persistence": float,
+        "lacunarity": float,
+        "base": int,
+        "data": [ Array of Perlin noise ]
+    }
+    ```
