@@ -1,4 +1,6 @@
 # noise-server
+![Image of Noise]
+(https://raw.githubusercontent.com/aglovaile/noise-server/main/noise-server/static/811387.png)
 An  API server that returns Perlin noise to you
 
 ## API Documentation
