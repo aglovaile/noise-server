@@ -9,8 +9,8 @@ import re
 import os, random
 import cProfile, pstats
 
-from .api.makeNoise import makeNoise
-from .api.makeImg import makeImg
+from api.makeNoise import makeNoise
+from api.makeImg import makeImg
 
 # def makeNoise(req):
 #     return req
@@ -29,13 +29,22 @@ async def getImg(x: int, y: int):
 
 
 @app.get('/api/noise/{dimensions}/')
-async def getNoiseJSON(dimensions:str, octaves:int=1, persistence:float=0.5, lacunarity:float=2.0, repeat:int=1024, repeatx:int=1024, repeaty:int=1024, base:int=0):
+async def getNoiseJSON(
+    dimensions:str, 
+    octaves:int=1, 
+    persistence:float=0.5, 
+    lacunarity:float=2.0, 
+    repeat:int=1024, 
+    repeatx:int=1024, 
+    repeaty:int=1024, 
+    base:int=0
+    ):
     if not re.search('(\d+)', dimensions):
         res = jsonable_encoder({'error': "Invalid dimensions for Perlin noise."})
         return JSONResponse(res)
     else:
         noiseReq = {
-            'dimensions': list(map(lambda i: int(i), re.findall('\d+', dimensions))),   # Convert XxYxZxW str format into List of integers
+            'dimensions': list(map(lambda i: int(i), re.findalllacunarity('\d+', dimensions))),   # Convert XxYxZxW str format into List of integers
             'octaves': octaves,
             'persistence': persistence,
             'lacunarity': lacunarity,

@@ -24,7 +24,7 @@ def makeImg(dimensions, octaves, persistence, lacunarity, base, frequency, minco
         for x in range(xDim):
             # Pixel val is three vals 0-255
             # Convert max hex color space into num, multiply by noise val, round to nearest int
-            pixelNoise = round((pnoise2(x * frequency, y * frequency, octaves=octaves, lacunarity=lacunarity, persistence=persistence, base=base) * (midColor - 1)) + midColor)
+            pixelNoise = round((snoise2(x * frequency, y * frequency, octaves=octaves, lacunarity=lacunarity, persistence=persistence, base=base) * (midColor - 1)) + midColor)
             
             if grayscale:
                 noiseHex = hex(pixelNoise)[2:]
