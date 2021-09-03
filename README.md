@@ -1,11 +1,13 @@
 # noise-server
 ![Image of Noise](https://raw.githubusercontent.com/aglovaile/noise-server/main/noise-server/static/811387.png)
-An API server that returns Perlin noise to you
+
+An API server that returns Perlin noise to you.
 
 ## API Documentation
 
 ### Get Perlin noise as JSON
 ----
+
 Returns a JSON object of Perlin noise depending on the provided dimensions and parameters.
 Perlin noise can be rendered from 1D to 4D.
 Noise dimensions are determined by how many are specified in the url.
