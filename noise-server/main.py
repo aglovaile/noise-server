@@ -33,7 +33,8 @@ async def getNoiseJSON(
     dimensions:str, 
     octaves:int=1, 
     persistence:float=0.5, 
-    lacunarity:float=2.0, 
+    lacunarity:float=2.0,
+    scale:int=1,
     repeat:int=1024, 
     repeatx:int=1024, 
     repeaty:int=1024, 
@@ -44,10 +45,11 @@ async def getNoiseJSON(
         return JSONResponse(res)
     else:
         noiseReq = {
-            'dimensions': list(map(lambda i: int(i), re.findalllacunarity('\d+', dimensions))),   # Convert XxYxZxW str format into List of integers
+            'dimensions': list(map(lambda i: int(i), re.findall('\d+', dimensions))),   # Convert XxYxZxW str format into List of integers
             'octaves': octaves,
             'persistence': persistence,
             'lacunarity': lacunarity,
+            'scale': scale,
             'repeat': repeat,
             'repeatx': repeatx,
             'repeaty': repeaty,
@@ -78,17 +80,36 @@ async def getNoiseImg(
     dimensions:str, 
     octaves:int=1, 
     persistence:float=0.5, 
-    lacunarity:float=2.0, 
+    lacunarity:float=2.0,
+    scale:float=1.0,
+    repeatx:int=1024,
+    repeaty:int=1024,
     base:int=0, 
     frequency:float=1.0,
     maxcolor:str='ffffff',
     mincolor:str='000000',
     grayscale:bool=False
     ):
+    noiseReq = {
+        'dimensions': list(map(lambda i: int(i), re.findall('\d+', dimensions))),   # Convert XxYxZxW str format into List of integers
+        'octaves': octaves,
+        'persistence': persistence,
+        'lacunarity': lacunarity,
+        'scale': scale,
+        'repeatx': repeatx,
+        'repeaty': repeaty,
+        'base': base,
+        'mincolor': mincolor,
+        'maxcolor': maxcolor,
+        'frequency': frequency,
+        'grayscale': grayscale
+    }
+
+
     profiler = cProfile.Profile()
     profiler.enable()
 
-    img = makeImg(dimensions, octaves, persistence, lacunarity, base, frequency, mincolor, maxcolor, grayscale)
+    img = makeImg(noiseReq)
     imgBytes = BytesIO()
     
     img.save(imgBytes, format='PNG')

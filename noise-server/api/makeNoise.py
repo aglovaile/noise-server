@@ -47,6 +47,7 @@ def twoDnoise(req):
     octaves = req['octaves']
     persistence = req['persistence']
     lacunarity = req['lacunarity']
+    scale = req['scale']
     repeatx = req['repeatx']
     repeaty = req['repeaty']
     base = req['base']
@@ -56,12 +57,12 @@ def twoDnoise(req):
     for y in range(int(dimensions[1])):
         row = []
         for x in range(int(dimensions[0])):
-           row.append(snoise2(x, y, octaves, persistence, lacunarity, repeatx, repeaty, base))
+           row.append(snoise2(x * scale, y * scale, octaves, persistence, lacunarity, repeatx, repeaty, base))
         xyList.append(row)
     
     res = req
     res['data'] = xyList
-    del res['repeat']
+    # del res['repeat']
 
     return req
 

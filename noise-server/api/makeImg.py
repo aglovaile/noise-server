@@ -1,31 +1,26 @@
 import re
-# import png
-from PIL import Image, ImageOps
+from PIL import Image 
 import numpy
-from random import randrange
 from noise import pnoise2, snoise2
-import cProfile, pstats
+from .makeNoise import twoDnoise
 
-def makeImg(dimensions, octaves, persistence, lacunarity, base, frequency, mincolor, maxcolor, grayscale):
-    profiler = cProfile.Profile()
-    profiler.enable()
 
-    xy = re.findall('\d+', dimensions)
+def makeImg(req):
+    grayscale = req['grayscale']
+    mincolor = req['mincolor']
+    maxcolor = req['maxcolor']
 
-    xDim = int(xy[0])
-    yDim = int(xy[1])
-
+    noiseList = twoDnoise(req)
     midColor = 128 if grayscale else int(maxcolor, 16) - int(mincolor, 16)
 
     pixelsList = []
-
-    for y in range(yDim):
+    for yRow in noiseList['data']:
         row = []
-        for x in range(xDim):
-            # Pixel val is three vals 0-255
-            # Convert max hex color space into num, multiply by noise val, round to nearest int
-            pixelNoise = round((snoise2(x * frequency, y * frequency, octaves=octaves, lacunarity=lacunarity, persistence=persistence, base=base) * (midColor - 1)) + midColor)
-            
+        for x in yRow:
+
+            pixelNoise = round((x * (midColor - 1)) + midColor)
+            print(x * midColor)
+
             if grayscale:
                 noiseHex = hex(pixelNoise)[2:]
                 rgbList = [noiseHex, noiseHex, noiseHex]
@@ -35,14 +30,12 @@ def makeImg(dimensions, octaves, persistence, lacunarity, base, frequency, minco
 
             row.append([int(rgbList[0], 16), int(rgbList[1], 16), int(rgbList[2], 16)])
         pixelsList.append(row)
+ 
     pixelsArray = numpy.array(pixelsList, dtype=numpy.uint8)
     newPng = Image.fromarray(pixelsArray, mode='RGB')
-
-    profiler.disable()
-    stats = pstats.Stats(profiler).sort_stats('cumtime')
-    stats.print_stats()
-    
+   
     return newPng
+
 
 if __name__ == '__main__':
     makeImg

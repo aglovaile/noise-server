@@ -24,10 +24,15 @@ Returned noise values will be floats between -1 and 1.
 
 * **URL Params:**
     * Optional
-        * `octaves=[int]`
-        * `lacunarity=[float]`
-        * `persistence=[float]`
-        * `base=[int]`
+        * `octaves: int=1`
+        * `lacunarity: float=2.0`
+        * `persistence: float=0.5`
+        * `base: int=0`
+        * `scale: float=1.0`
+        * `repeat: int=1024`    ** only used for 1d noise
+        * `repeatx: int=1024`   ** only used for 2d noise
+        * `repeaty: int=1024`   ** only used for 2d noise
+
     
 * **Data Params**
     * None
@@ -36,13 +41,46 @@ Returned noise values will be floats between -1 and 1.
     * Code: 200
     * Content-Type: application/json
     * Content: 
-    ``` json
+    ```
     {
         "dimensions": [ dimension1=[int], ... ],
         "octaves": int,
         "persistence": float,
         "lacunarity": float,
         "base": int,
+        "scale": float,
         "data": [ Array of Perlin noise ]
     }
     ```
+
+### Get Perlin noise as a PNG
+----
+
+Returns a PNG image of Perlin noise depending on provided dimensions and parameters. 
+Url path must specify X and Y dimensions, other dimensions will be ignored.
+If no Y dimension is specified, a square image of {X}x{X} will be returned.
+By default a color image will be returned with colors ranging from #ffffff to #000000.
+
+* **URL:**
+    /api/png/{X}x{Y}
+
+* **Method:**
+    `GET`
+
+* **URL Params:**
+    * Optional
+        * `octaves: int=1`
+        * `persistence: float=0.5`
+        * `lacunarity: float=2.0`
+        * `base: int=0`
+        * `scale: float=1.0`
+        * `maxcolor: str='ffffff'`
+        * `mincolor: str='000000'`
+        * `grayscale: bool=False`
+
+* **Data Params:**
+    * None
+
+* **Success Response:**
+    * Code: 200
+    * Content-Type: image/png
