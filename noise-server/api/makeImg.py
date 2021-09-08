@@ -9,6 +9,10 @@ def makeImg(req):
     grayscale = req['grayscale']
     mincolor = req['mincolor']
     maxcolor = req['maxcolor']
+    dimensions = req['dimensions']
+
+    if len(dimensions) < 2:
+        dimensions.append(dimensions[0])
 
     noiseList = twoDnoise(req)
     midColor = 128 if grayscale else int(maxcolor, 16) - int(mincolor, 16)
@@ -19,7 +23,6 @@ def makeImg(req):
         for x in yRow:
 
             pixelNoise = round((x * (midColor - 1)) + midColor)
-            print(x * midColor)
 
             if grayscale:
                 noiseHex = hex(pixelNoise)[2:]
