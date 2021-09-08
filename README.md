@@ -84,3 +84,6 @@ By default a color image will be returned with colors ranging from #ffffff to #0
 * **Success Response:**
     * Code: 200
     * Content-Type: image/png
+    * Content:
+
+        ![Example image of full color noise](https://raw.githubusercontent.com/aglovaile/noise-server/main/noise-server/static/480x320.png)
